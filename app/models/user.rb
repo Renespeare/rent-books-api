@@ -6,5 +6,6 @@ class User < ApplicationRecord
     validates :password,  confirmation: true,
             length: { minimum: 8 },
             if: -> { new_record? || !password.nil? }
-    validates :password_confirmation, presence: true
+    validates :password_confirmation, presence: true,
+            if: -> { new_record? || !password.nil? } 
 end

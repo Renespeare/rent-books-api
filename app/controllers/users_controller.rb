@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  before_action :authorize_request, except: :create
+  before_action :auth_request, except: :create
   before_action :find_user, except: %i[create index]
 
   def index
@@ -25,20 +25,32 @@ class UsersController < ApplicationController
 
   # PUT /users/{username}
   def update
-    unless @user.update(update_user_params)
-      render json: { errors: @user.errors.full_messages },
+    current_user = auth_request
+    if current_user.id != @user.id
+      render json: { errors: "Can't have access" },
              status: :unprocessable_entity
     else
-      render json: @user, status: :ok
+      unless @user.update(update_user_params)
+        render json: { errors: @user.errors.full_messages },
+               status: :unprocessable_entity
+      else
+        render json: @user, status: :ok
+      end
     end
   end
 
   # DELETE /users/{username}
   def destroy
-    unless @user.destroy
-      render json: { errors: 'User not delete' }, status: :not_found
-    else  
-      render json: { body: 'User deleted' }, status: :ok
+    current_user = auth_request
+    if current_user.id != @user.id
+      render json: { errors: "Can't have access" },
+             status: :unprocessable_entity
+    else
+      unless @user.destroy
+        render json: { errors: 'User not deleted' }, status: :not_found
+      else  
+        render json: { body: 'User deleted' }, status: :ok
+      end
     end
   end
 
@@ -52,18 +64,13 @@ class UsersController < ApplicationController
 
   def user_params
     params.permit(
-      :username, :email, :password, :password_confirmation, :is_admin
+      :username, :email, :password, :password_confirmation
     )
   end
 
   def update_user_params
     user_params = params.permit(
-      :phone_number, :address, :is_admin, :password, :password_confirmation
+      :phone_number, :address
     )
-     # Remove the password and password confirmation keys for empty values
-    user_params.delete(:password) unless user_params[:password].present?
-    user_params.delete(:password_confirmation) unless user_params[:password_confirmation].present?
-
-    user_params
   end
 end
