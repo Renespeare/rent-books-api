@@ -2,23 +2,29 @@ class UsersController < ApplicationController
   before_action :auth_request, except: :create
   before_action :find_user, except: %i[create index]
 
+  # GET /users
   def index
-    @users = User.all
-    render json: @users, status: :ok
+    begin
+      @users = User.all
+      render json: { status: 'success', data: @users }, status: :ok
+    rescue ActiveRecord::ActiveRecordError
+      render json: { status: 'error', message: @users.errors.full_messages },
+      status: :unprocessable_entity
+    end 
   end
 
   # GET /users/{username}
   def show
-    render json: @user, status: :ok
+    render json: { status: 'success', data: @user }, status: :ok
   end
 
   # POST /users
   def create
     @user = User.new(user_params)
     if @user.save
-      render json: @user, status: :created
+      render json: { status: 'success', data: @user }, status: :created
     else
-      render json: { errors: @user.errors.full_messages },
+      render json: { status: 'error', message: @user.errors.full_messages },
              status: :unprocessable_entity
     end
   end
@@ -27,14 +33,14 @@ class UsersController < ApplicationController
   def update
     current_user = auth_request
     if current_user.id != @user.id
-      render json: { errors: "Can't have access" },
-             status: :unprocessable_entity
+      render json: { status: 'error', message: "Can't have access" },
+             status: :forbidden
     else
       unless @user.update(update_user_params)
-        render json: { errors: @user.errors.full_messages },
+        render json: { status: 'error', message: @user.errors.full_messages },
                status: :unprocessable_entity
       else
-        render json: @user, status: :ok
+        render json: { status: 'success', data: @user }, status: :ok
       end
     end
   end
@@ -43,13 +49,13 @@ class UsersController < ApplicationController
   def destroy
     current_user = auth_request
     if current_user.id != @user.id
-      render json: { errors: "Can't have access" },
-             status: :unprocessable_entity
+      render json: { status: 'error', message: "Can't have access" },
+             status: :forbidden
     else
       unless @user.destroy
-        render json: { errors: 'User not deleted' }, status: :not_found
+        render json: { status: 'error', message: 'User not deleted' }, status: :unprocessable_entity
       else  
-        render json: { body: 'User deleted' }, status: :ok
+        render json: { status: 'success', message: 'User deleted' }, status: :ok
       end
     end
   end
@@ -59,7 +65,7 @@ class UsersController < ApplicationController
   def find_user
     @user = User.find_by_username!(params[:_username])
     rescue ActiveRecord::RecordNotFound
-      render json: { errors: 'User not found' }, status: :not_found
+      render json: { status: 'error' , message: 'User not found' }, status: :not_found
   end
 
   def user_params
