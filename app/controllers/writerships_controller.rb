@@ -17,7 +17,7 @@ class WritershipsController < ApplicationController
             sql = "SELECT * FROM 'books' LEFT OUTER JOIN 'writerships' ON 'writerships'.'book_id' = 'books'.'id' LEFT OUTER JOIN 'writers' ON 'writers'.'id' = 'writerships'.'writer_id'"
             @writerships = Writership.all
             records_array = ActiveRecord::Base.connection.execute(sql)
-            render json: ['writerships': @writerships, 'data':records_array], status: :ok
+            render json: {'writerships': @writerships, 'data':records_array}, status: :ok
         rescue ActiveRecord::ActiveRecordError
             render json: { status: 'error', message: @writerships.errors.full_messages },
             status: :unprocessable_entity
@@ -30,7 +30,7 @@ class WritershipsController < ApplicationController
         begin
             book = Book.find(@writership.book_id)
             writer = Writer.find(@writership.writer_id)
-            render json: ['relation': @writership, 'book': book, 'writer': writer], status: :ok
+            render json: {'relation': @writership, 'book': book, 'writer': writer}, status: :ok
         rescue ActiveRecord::ActiveRecordError
             render json: { status: 'error', message: 'error show data' },
             status: :unprocessable_entity
