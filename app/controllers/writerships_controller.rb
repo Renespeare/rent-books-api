@@ -39,12 +39,18 @@ class WritershipsController < ApplicationController
     
     # POST /writerships
     def create
-        if @book.writers << @writer
-            render json: { status: 'success', data: @book.writers }, status: :created
-        else
-            render json: { status: 'error', message: @book.writers.errors.full_messages },
-                status: :unprocessable_entity
+        begin
+            if @book.writers << @writer
+                render json: { status: 'success', data: @book.writers }, status: :created
+            else
+                render json: { status: 'error', message: @book.writers.errors.full_messages },
+                    status: :unprocessable_entity
+            end
+        rescue => exception
+            render json: { status: 'error', message: "relation can't duplicate" },
+                    status: :unprocessable_entity
         end
+       
     end
 
     # PUT /writerships
@@ -59,7 +65,7 @@ class WritershipsController < ApplicationController
         
     end
 
-    # DELETE /writership/{id}
+    # DELETE /writerships/{id}
     def destroy
         unless @writership.destroy
             render json: { status: 'error', message: 'Writership not deleted' }, status: :unprocessable_entity
