@@ -1,7 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe "Authentications", type: :request do
-  describe "GET /index" do
-    pending "add some examples (or delete) #{__FILE__}"
+  it 'responds with a valid JWT' do
+    post "/auth/login"
+    token = JSON.parse(response.body)['token']
+  
+    expect { JWT.decode(token, key) }.to_not raise_error(JWT::DecodeError)
   end
 end
