@@ -6,6 +6,7 @@ class ReviewsController < ApplicationController
     # POST /reviews
     def create
         @review = Review.new(review_params)
+        @review.user_id = @user.id
         if @review.save
             render json: { status: 'success', data: @review }, status: :created
         else
