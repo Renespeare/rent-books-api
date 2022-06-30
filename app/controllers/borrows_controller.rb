@@ -4,6 +4,7 @@ class BorrowsController < ApplicationController
     before_action :find_user, except: %i[index show destroy]
     before_action :find_book, except: %i[index show destroy]
     before_action :find_borrow, except: %i[create index]
+    before_action :check_borrow_available, except: %i[index show destroy]
 
     # GET /borrows
     def index
@@ -92,9 +93,22 @@ class BorrowsController < ApplicationController
             render json: { status: 'error', message: 'Book not found' }, status: :not_found
     end
 
-    # def borrow_params
-    #     params.permit(
-    #       :name
-    #     )
-    # end
+    def check_borrow_available
+        flag = 0
+        @borrowed =  Borrow.where(user_id: @user.id, is_return: false)
+        if @borrowed
+            @borrowed.each do |borrow|
+                if borrow.date_return < DateTime.now.getlocal.at_midnight
+                    borrow.update_attribute('is_return', true)
+                else
+                    flag += 1
+                end
+            end
+        end
+
+        if flag >= 3
+            render json: { status: 'error', message: "Can't rent book, already rent 3 books" }, status: :forbidden
+        end
+    end
+    
 end

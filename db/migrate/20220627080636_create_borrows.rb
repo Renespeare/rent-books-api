@@ -5,6 +5,7 @@ class CreateBorrows < ActiveRecord::Migration[7.0]
       t.integer :user_id
       t.datetime :date_rent
       t.datetime :date_return
+      t.boolean :is_return, default: false
 
       t.timestamps
     end

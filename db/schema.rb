@@ -56,6 +56,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_30_072015) do
     t.integer "user_id"
     t.datetime "date_rent"
     t.datetime "date_return"
+    t.boolean "is_return", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["book_id", "user_id"], name: "index_borrows_on_book_id_and_user_id", unique: true
