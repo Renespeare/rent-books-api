@@ -6,10 +6,17 @@ class BooksController < ApplicationController
   # GET /books
   def index
     begin
-      @books = Book.all
-      render json: { status: 'success', data: @books }, status: :ok
+      # sql = "SELECT 'writer_id', 'title', 'synopsis', 'genre', 'image', 'publisher', 'published_year', 'page_count', 'isbn' FROM 'books'"
+      # records_array = ActiveRecord::Base.connection.execute(sql)
+      books = Book.select((Book.attribute_names - ['image_data'])).limit(params[:limit]).offset(params[:offset])
+      @result = books.as_json
+      @result.each do |item|
+        cover = Book.find(item['id'])
+        item['cover_image'] = {filename: cover.image_data['metadata']['filename'], link: "#{request.base_url}/uploads/#{cover.image_data['id']}"}
+      end
+      render json: { status: 'success', data: @result }, status: :ok
     rescue ActiveRecord::ActiveRecordError
-      render json: { status: 'error', message: @books.errors.full_messages },
+      render json: { status: 'error', message: 'Get data error' },
       status: :unprocessable_entity
     end
     
@@ -17,7 +24,10 @@ class BooksController < ApplicationController
 
   # GET /books/{id}
   def show
-    render json: { status: 'success', data: @book }, status: :ok
+    query = Book.select((Book.attribute_names - ['image_data'])).find(params[:_id])
+    result = query.as_json
+    result['cover_image'] = {filename: @book.image_data['metadata']['filename'], link: "#{request.base_url}/uploads/#{@book.image_data['id']}"}
+    render json: { status: 'success', data: result }, status: :ok
   end
   
   # POST /books
@@ -67,7 +77,7 @@ class BooksController < ApplicationController
   
   def book_params
     params.permit(
-      :writer_id, :title, :synopsis, :genre, :publisher, :published_year, :page_count, :isbn, :contents
+      :writer_id, :title, :synopsis, :genre, :image, :publisher, :published_year, :page_count, :isbn
     )
   end
 
