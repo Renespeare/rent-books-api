@@ -9,22 +9,6 @@ RSpec.describe "Books", type: :request do
     JSON.parse(response.body)
   end
 
-  describe 'CREATE /books/{id}' do
-    it 'responds with JSON with JWT and admin' do
-      post "/auth/login", params: {email: admin.email, password: 'password'}
-      token = json["token"]
-      get "/books/#{book.id}", headers: {"Authorization": "Bearer #{token}", "Accept": "application/json"}
-      expect(response).to have_http_status(200)
-    end
-
-    # it 'responds with JSON with JWT and not admin' do
-    #   post "/auth/login", params: {email: user.email, password: 'password'}
-    #   token = json["token"]
-    #   get "/books/#{book.id}", headers: {"Authorization": "Bearer #{token}", "Accept": "application/json"}
-    #   expect(response).to have_http_status(403)
-    # end
-  end
-
   describe 'GET /books' do
     it 'reponds invalid request without JWT' do
       get '/books'
