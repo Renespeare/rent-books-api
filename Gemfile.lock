@@ -83,6 +83,11 @@ GEM
     down (5.3.1)
       addressable (~> 2.8)
     erubi (1.10.0)
+    factory_bot (6.2.1)
+      activesupport (>= 5.0.0)
+    factory_bot_rails (6.2.0)
+      factory_bot (~> 6.2.0)
+      railties (>= 5.0.0)
     faker (2.21.0)
       i18n (>= 1.8.11, < 2)
     ffi (1.15.5)
@@ -106,7 +111,7 @@ GEM
     method_source (1.0.0)
     mini_magick (4.11.0)
     mini_mime (1.1.2)
-    minitest (5.15.0)
+    minitest (5.16.1)
     msgpack (1.5.2)
     net-imap (0.2.3)
       digest
@@ -130,8 +135,8 @@ GEM
       nio4r (~> 2.0)
     racc (1.6.0)
     rack (2.2.3.1)
-    rack-test (1.1.0)
-      rack (>= 1.0, < 3)
+    rack-test (2.0.1)
+      rack (>= 1.3)
     rails (7.0.3)
       actioncable (= 7.0.3)
       actionmailbox (= 7.0.3)
@@ -178,17 +183,25 @@ GEM
       rspec-mocks (~> 3.10)
       rspec-support (~> 3.10)
     rspec-support (3.11.0)
+<<<<<<< HEAD
     ruby-vips (2.1.4)
       ffi (~> 1.12)
     shrine (3.4.0)
       content_disposition (~> 1.0)
       down (~> 5.1)
     sqlite3 (1.4.3)
+=======
+    shoulda-matchers (5.1.0)
+      activesupport (>= 5.2.0)
+    sqlite3 (1.4.4)
+>>>>>>> unit-test
     strscan (3.0.3)
     thor (1.2.1)
     timeout (0.3.0)
     tzinfo (2.0.4)
       concurrent-ruby (~> 1.0)
+    tzinfo-data (1.2022.1)
+      tzinfo (>= 1.0.0)
     websocket-driver (0.7.5)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
@@ -201,13 +214,18 @@ DEPENDENCIES
   bcrypt (~> 3.1.7)
   bootsnap
   debug
+  factory_bot_rails
   faker
   image_processing (~> 1.12, >= 1.12.2)
   jwt
   puma (~> 5.0)
   rails (~> 7.0.3)
   rspec-rails
+<<<<<<< HEAD
   shrine (~> 3.4)
+=======
+  shoulda-matchers
+>>>>>>> unit-test
   sqlite3 (~> 1.4)
   tzinfo-data
 
