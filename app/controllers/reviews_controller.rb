@@ -3,23 +3,11 @@ class ReviewsController < ApplicationController
     before_action :find_review, except: %i[create index]
     before_action :find_user, except: %i[index show destroy]
 
-    # POST /reviews
-    def create
-        @review = Review.new(review_params)
-        @review.user_id = @user.id
-        if @review.save
-            render json: { status: 'success', data: @review }, status: :created
-        else
-            render json: { status: 'error', message: @review.errors.full_messages },
-                   status: :unprocessable_entity
-        end
-    end
-
     # GET /reviews
     def index
         begin
             @reviews = Review.all
-            render json: {status: 'succes', data: @reviews}, status: :ok
+            render json: {status: 'success', data: @reviews}, status: :ok
         rescue ActiveRecord::ActiveRecordError
             render json: {status: 'error', message: @reviews.errors.full_messages},
             status: :unprocessable_entity
@@ -29,6 +17,24 @@ class ReviewsController < ApplicationController
     # GET /reviews/{id}
     def show
         render json: { status: 'success', data: @review }, status: :ok
+    end
+
+    # POST /reviews
+    def create
+        begin
+            @review = Review.new(review_params)
+            @review.user_id = @user.id
+            if @review.save
+                render json: { status: 'success', data: @review }, status: :created
+            else
+                render json: { status: 'error', message: @review.errors.full_messages },
+                    status: :unprocessable_entity
+            end
+        rescue => exception
+            render json: { status: 'error', message: "relation can't duplicate" },
+            status: :unprocessable_entity
+        end
+        
     end
 
     # PUT /reviews/{id}
