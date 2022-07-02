@@ -12,7 +12,12 @@ class BooksController < ApplicationController
       @result = books.as_json
       @result.each do |item|
         cover = Book.find(item['id'])
-        item['cover_image'] = {filename: cover.image_data['metadata']['filename'], link: "#{request.base_url}/uploads/#{cover.image_data['id']}"}
+        if cover.image_data != nil
+          item['cover_image'] = {filename: cover.image_data['metadata']['filename'], link: "#{request.base_url}/uploads/#{cover.image_data['id']}"}
+        else
+          item['cover_image'] = nil
+        end
+       
       end
       render json: { status: 'success', data: @result }, status: :ok
     rescue ActiveRecord::ActiveRecordError
@@ -24,10 +29,21 @@ class BooksController < ApplicationController
 
   # GET /books/{id}
   def show
-    query = Book.select((Book.attribute_names - ['image_data'])).find(params[:_id])
-    result = query.as_json
-    result['cover_image'] = {filename: @book.image_data['metadata']['filename'], link: "#{request.base_url}/uploads/#{@book.image_data['id']}"}
-    render json: { status: 'success', data: result }, status: :ok
+    begin
+      if @book.image_data != nil
+        query = Book.select((Book.attribute_names - ['image_data'])).find(params[:_id])
+        result = query.as_json
+        result['cover_image'] = {filename: @book.image_data['metadata']['filename'], link: "#{request.base_url}/uploads/#{@book.image_data['id']}"}
+        render json: { status: 'success', data: result }, status: :ok
+      else
+        render json: { status: 'success', data: @book }, status: :ok
+      end
+    rescue => exception
+      render json: { status: 'error', message: "Get data failed" }, status: :unprocessable_entity
+    end
+    
+    
+    
   end
   
   # POST /books
