@@ -8,6 +8,7 @@ Rails.application.routes.draw do
   resources :writerships, param: :_id
   resources :borrows, param: :_id
   resources :reviews, param: :_id
+  resources :book_content, param: :_id
   post '/auth/login', to: 'authentication#login'
   get '/*a', to: 'application#not_found'
 
