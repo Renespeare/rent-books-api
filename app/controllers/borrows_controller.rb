@@ -9,10 +9,10 @@ class BorrowsController < ApplicationController
     # GET /borrows
     def index
         begin
-            @borrows = Borrow.all
+            @borrows = Borrow.all.limit(params[:limit]).offset(params[:page].to_i - 1)
             # sql = "SELECT * FROM 'users' LEFT OUTER JOIN 'borrows' ON 'borrows'.'user_id' = 'users'.'id' LEFT OUTER JOIN 'books' ON 'books'.'id' = 'borrows'.'book_id'"
             # records_array = ActiveRecord::Base.connection.execute(sql)
-            render json: {'borrows': @borrows}, status: :ok
+            render json: {'borrows': @borrows, limit: params[:limit], links:{prev: "/borrows?page=#{params[:page].to_i - 1}&limit=#{params[:limit]}", next: "/borrows?page=#{params[:page].to_i + 1}&limit=#{params[:limit]}"} }, status: :ok
         rescue ActiveRecord::ActiveRecordError
             render json: { status: 'error', message: @borrows.errors.full_messages },
             status: :unprocessable_entity

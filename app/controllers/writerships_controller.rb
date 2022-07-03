@@ -14,10 +14,10 @@ class WritershipsController < ApplicationController
         # sql = "SELECT * FROM 'books'"
         # sql = "SELECT * FROM 'writers' LEFT OUTER JOIN 'writerships' ON 'writerships'.'writer_id' = 'writers'.'id' LEFT OUTER JOIN 'books' ON 'books'.'id' = 'writerships'.'book_id'"
         begin
-            sql = "SELECT * FROM 'books' LEFT OUTER JOIN 'writerships' ON 'writerships'.'book_id' = 'books'.'id' LEFT OUTER JOIN 'writers' ON 'writers'.'id' = 'writerships'.'writer_id'"
-            @writerships = Writership.all
-            records_array = ActiveRecord::Base.connection.execute(sql)
-            render json: {'writerships': @writerships, 'data':records_array}, status: :ok
+            # sql = "SELECT * FROM 'books' LEFT OUTER JOIN 'writerships' ON 'writerships'.'book_id' = 'books'.'id' LEFT OUTER JOIN 'writers' ON 'writers'.'id' = 'writerships'.'writer_id'"
+            # records_array = ActiveRecord::Base.connection.execute(sql)
+            @writerships = Writership.all.limit(params[:limit]).offset(params[:page].to_i - 1)
+            render json: {status: 'success', data: @writerships, limit: params[:limit], links:{prev: "/writerships?page=#{params[:page].to_i - 1}&limit=#{params[:limit]}", next: "/writerships?page=#{params[:page].to_i + 1}&limit=#{params[:limit]}"}}, status: :ok
         rescue ActiveRecord::ActiveRecordError
             render json: { status: 'error', message: @writerships.errors.full_messages },
             status: :unprocessable_entity

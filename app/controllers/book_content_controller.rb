@@ -6,7 +6,7 @@ class BookContentController < ApplicationController
     # GET /book-content
     def index
         begin
-            book_contents = BookContent.select((BookContent.attribute_names - ['pdf_data'])).limit(params[:limit]).offset(params[:offset])
+            book_contents = BookContent.select((BookContent.attribute_names - ['pdf_data'])).limit(params[:limit]).offset(params[:page].to_i - 1)
             @result = book_contents.as_json
             @result.each do |item|
                 data = BookContent.find(item['id'])
@@ -16,7 +16,7 @@ class BookContentController < ApplicationController
                     item['content'] = nil
                 end
             end
-            render json: { status: 'success', data: @result }, status: :ok
+            render json: { status: 'success', data: @result, limit: params[:limit], links:{prev: "/book-content?page=#{params[:page].to_i - 1}&limit=#{params[:limit]}", next: "/book_content?page=#{params[:page].to_i + 1}&limit=#{params[:limit]}"} }, status: :ok
         rescue ActiveRecord::ActiveRecordError
             render json: { status: 'error', message: 'Get data error' },
             status: :unprocessable_entity

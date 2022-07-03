@@ -5,8 +5,8 @@ class UsersController < ApplicationController
   # GET /users
   def index
     begin
-      @users = User.all
-      render json: { status: 'success', data: @users }, status: :ok
+      @users = User.all.limit(params[:limit]).offset(params[:page].to_i - 1)
+      render json: { status: 'success', data: @users, limit: params[:limit], links:{prev: "/users?page=#{params[:page].to_i - 1}&limit=#{params[:limit]}", next: "/users?page=#{params[:page].to_i + 1}&limit=#{params[:limit]}"} }, status: :ok
     rescue ActiveRecord::ActiveRecordError
       render json: { status: 'error', message: @users.errors.full_messages },
       status: :unprocessable_entity

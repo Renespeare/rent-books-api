@@ -8,7 +8,7 @@ class BooksController < ApplicationController
     begin
       # sql = "SELECT 'writer_id', 'title', 'synopsis', 'genre', 'image', 'publisher', 'published_year', 'page_count', 'isbn' FROM 'books'"
       # records_array = ActiveRecord::Base.connection.execute(sql)
-      books = Book.select((Book.attribute_names - ['image_data'])).limit(params[:limit]).offset(params[:offset])
+      books = Book.select((Book.attribute_names - ['image_data'])).limit(params[:limit]).offset(params[:page].to_i - 1)
       @result = books.as_json
       @result.each do |item|
         cover = Book.find(item['id'])
@@ -19,7 +19,7 @@ class BooksController < ApplicationController
         end
        
       end
-      render json: { status: 'success', data: @result }, status: :ok
+      render json: { status: 'success', data: @result, limit: params[:limit], links:{prev: "/books?page=#{params[:page].to_i - 1}&limit=#{params[:limit]}", next: "/books?page=#{params[:page].to_i + 1}&limit=#{params[:limit]}"} }, status: :ok
     rescue ActiveRecord::ActiveRecordError
       render json: { status: 'error', message: 'Get data error' },
       status: :unprocessable_entity

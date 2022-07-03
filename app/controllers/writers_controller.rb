@@ -6,8 +6,8 @@ class WritersController < ApplicationController
     # GET /writers
     def index
         begin
-            @writers = Writer.all
-            render json: { status: 'success', data: @writers }, 
+            @writers = Writer.all.limit(params[:limit]).offset(params[:page].to_i - 1)
+            render json: { status: 'success', data: @writers, limit: params[:limit], links:{prev: "/writers?page=#{params[:page].to_i - 1}&limit=#{params[:limit]}", next: "/writers?page=#{params[:page].to_i + 1}&limit=#{params[:limit]}"} }, 
             status: :ok
         rescue ActiveRecord::ActiveRecordError
             render json: { status: 'error', message: @writers.errors.full_messages },

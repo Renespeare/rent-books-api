@@ -6,8 +6,8 @@ class ReviewsController < ApplicationController
     # GET /reviews
     def index
         begin
-            @reviews = Review.all
-            render json: {status: 'success', data: @reviews}, status: :ok
+            @reviews = Review.all.limit(params[:limit]).offset(params[:page].to_i - 1)
+            render json: {status: 'success', data: @reviews, limit: params[:limit], links:{prev: "/reviews?page=#{params[:page].to_i - 1}&limit=#{params[:limit]}", next: "/reviews?page=#{params[:page].to_i + 1}&limit=#{params[:limit]}"}}, status: :ok
         rescue ActiveRecord::ActiveRecordError
             render json: {status: 'error', message: @reviews.errors.full_messages},
             status: :unprocessable_entity
