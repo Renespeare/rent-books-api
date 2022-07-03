@@ -8,8 +8,8 @@ One of the problems with the low literacy rate in Indonesia is the unequal acces
 - User review
 
 ## API Tech Stack
-- Ruby
-- Rails
+- Ruby (3.1.2)
+- Rails (7.0.3)
 - Rspec
 - Sqlite3
 - JWT
@@ -27,6 +27,9 @@ Do this before run:
 `rails s`
 
 the API is all set.
+
+## Postman Collection [THIS LINK](https://www.postman.com/crimson-meteor-462355/workspace/rent-books-api/environment/21633113-e74a2357-8c56-4136-891e-12b505014077)
+
 ## Collaborators (BE_ED4)
 - [Manogunawan Resqi Gultom](https://github.com/manogunawan2710) - KM_G2BE3046 
 - [Muhammad Ridho Rizqillah](https://github.com/renespeare) - KM_G2BE3119 
