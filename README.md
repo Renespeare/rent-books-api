@@ -28,6 +28,8 @@ Do this before run:
 
 the API is all set.
 
+## Entity Relationship Diagram [THIS LINK](https://drive.google.com/file/d/1esKPBgUQjg_b9XAzVG6kbrYGcUyvKVE4/view?usp=sharing)
+
 ## Postman Collection [THIS LINK](https://www.postman.com/crimson-meteor-462355/workspace/rent-books-api/environment/21633113-e74a2357-8c56-4136-891e-12b505014077)
 
 ## Collaborators (BE_ED4)
