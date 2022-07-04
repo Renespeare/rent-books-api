@@ -20,9 +20,9 @@ Do this before run:
 
 `bundle install`
 
-`db:drop`
+`rails db:drop`
 
-`db:migrate`
+`rails db:migrate`
 
 `rails s`
 
